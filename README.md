@@ -106,13 +106,3 @@ With the default configuration, `main.py` follows these steps:
 
 
 
-## Citation
-
-```
-
-```
-
-
-
-
-
