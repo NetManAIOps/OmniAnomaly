@@ -4,7 +4,7 @@
 
 ### Anomaly Detection for Multivariate Time Series through Modeling Temporal Dependence of Stochastic Variables
 
-OmniAnomaly is a deep Bayesian network model which glues Gated Recurrent Unit (GRU) and Variational auto-encoder (VAE), its core idea is to learn the normal patterns of multivariate time series and uses the reconstruction probability to do anomaly judgment. 
+OmniAnomaly is a stochastic recurrent neural network model which glues Gated Recurrent Unit (GRU) and Variational auto-encoder (VAE), its core idea is to learn the normal patterns of multivariate time series and uses the reconstruction probability to do anomaly judgment. 
 
 
 
