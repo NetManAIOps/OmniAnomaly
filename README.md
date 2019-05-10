@@ -105,4 +105,10 @@ With the default configuration, `main.py` follows these steps:
 * Init POT model on `train_score` to find the threshold of anomaly score, and using this threshold to predict on the testing set.
 
 
+## Training loss
+
+The figure below are the training loss of our model on MSL and SMAP, which indicates that our model can converge well on these two datasets.
+
+![image](http://github.com/smallcowbaby/OmniAnomaly/raw/master/images/MSL_loss.jpg)
+![image](http://github.com/smallcowbaby/OmniAnomaly/raw/master/images/SMAP_loss.jpg)
 
