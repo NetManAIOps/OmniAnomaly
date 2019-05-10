@@ -109,6 +109,6 @@ With the default configuration, `main.py` follows these steps:
 
 The figure below are the training loss of our model on MSL and SMAP, which indicates that our model can converge well on these two datasets.
 
-![image](http://github.com/smallcowbaby/OmniAnomaly/raw/master/images/MSL_loss.jpg)
-![image](http://github.com/smallcowbaby/OmniAnomaly/raw/master/images/SMAP_loss.jpg)
+![image](http://github.com/smallcowbaby/OmniAnomaly/raw/master/images/MSL_loss)
+![image](http://github.com/smallcowbaby/OmniAnomaly/raw/master/images/SMAP_loss)
 
