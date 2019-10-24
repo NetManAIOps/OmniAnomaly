@@ -24,7 +24,7 @@ from omni_anomaly.utils import get_data_dim, get_data, save_z
 class ExpConfig(Config):
     # dataset configuration
     dataset = "machine-1-1"
-    x_dim = None
+    x_dim = get_data_dim(dataset)
 
     # model architecture configuration
     use_connected_z_q = True
@@ -77,7 +77,7 @@ class ExpConfig(Config):
 
     # outputs config
     save_z = False  # whether to save sampled z in hidden space
-    get_score_on_dim = True  # whether to get score on dim. If `True`, the score will be a 2-dim ndarray
+    get_score_on_dim = False  # whether to get score on dim. If `True`, the score will be a 2-dim ndarray
     save_dir = 'model'
     restore_dir = None  # If not None, restore variables from this dir
     result_dir = 'result'  # Where to save the result file
@@ -94,7 +94,7 @@ def main():
     # prepare the data
     (x_train, _), (x_test, y_test) = \
         get_data(config.dataset, config.max_train_size, config.max_test_size, train_start=config.train_start,
-                 test_start=config.test_start, x_dim=config.x_dim)
+                 test_start=config.test_start)
 
     # construct the model under `variable_scope` named 'model'
     with tf.variable_scope('model') as model_vs:
@@ -206,8 +206,7 @@ if __name__ == '__main__':
     arg_parser = ArgumentParser()
     register_config_arguments(config, arg_parser)
     arg_parser.parse_args(sys.argv[1:])
-    if config.x_dim is None:
-        config.x_dim = get_data_dim(config.dataset)
+    config.x_dim = get_data_dim(config.dataset)
 
     print_with_title('Configurations', pformat(config.to_dict()), after='\n')
 
