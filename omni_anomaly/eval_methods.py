@@ -56,6 +56,13 @@ def adjust_predicts(score, label,
         if actual[i] and predict[i] and not anomaly_state:
                 anomaly_state = True
                 anomaly_count += 1
+                for j in range(i, 0, -1):
+                    if not actual[j]:
+                        break
+                    else:
+                        if not predict[j]:
+                            predict[j] = True
+                            latency += 1
         elif not actual[i]:
             anomaly_state = False
         if anomaly_state:
