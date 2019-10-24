@@ -24,7 +24,7 @@ from omni_anomaly.utils import get_data_dim, get_data, save_z
 class ExpConfig(Config):
     # dataset configuration
     dataset = "machine-1-1"
-    x_dim = get_data_dim(dataset)
+    x_dim = None
 
     # model architecture configuration
     use_connected_z_q = True
@@ -46,14 +46,20 @@ class ExpConfig(Config):
     initial_lr = 0.001
     lr_anneal_factor = 0.5
     lr_anneal_epoch_freq = 40
-    lr_anneal_step_freq = 400
+    lr_anneal_step_freq = None
     std_epsilon = 1e-4
 
     # evaluation parameters
-    test_n_z = 1024
+    test_n_z = 1
     test_batch_size = 50
     test_start = 0
     max_test_size = None  # `None` means full test set
+
+    # the range and step-size for score for searching best-f1
+    # may vary for different dataset
+    bf_search_min = -400.
+    bf_search_max = 400.
+    bf_search_step_size = 1.
 
     valid_step_freq = 100
     gradient_clip_norm = 10.
@@ -71,7 +77,7 @@ class ExpConfig(Config):
 
     # outputs config
     save_z = False  # whether to save sampled z in hidden space
-    get_score_on_dim = False  # whether to get score on dim. If `True`, the score will be a 2-dim ndarray
+    get_score_on_dim = True  # whether to get score on dim. If `True`, the score will be a 2-dim ndarray
     save_dir = 'model'
     restore_dir = None  # If not None, restore variables from this dir
     result_dir = 'result'  # Where to save the result file
@@ -88,7 +94,7 @@ def main():
     # prepare the data
     (x_train, _), (x_test, y_test) = \
         get_data(config.dataset, config.max_train_size, config.max_test_size, train_start=config.train_start,
-                 test_start=config.test_start)
+                 test_start=config.test_start, x_dim=config.x_dim)
 
     # construct the model under `variable_scope` named 'model'
     with tf.variable_scope('model') as model_vs:
@@ -158,8 +164,12 @@ def main():
                         train_score = np.sum(train_score, axis=-1)
 
                     # get best f1
-                    t, th = bf_search(test_score, y_test[-len(test_score):], start=-10000., end=1000.,
-                                      step_num=500, display_freq=50)
+                    t, th = bf_search(test_score, y_test[-len(test_score):],
+                                      start=config.bf_search_min,
+                                      end=config.bf_search_max,
+                                      step_num=int(abs(config.bf_search_max - config.bf_search_min) /
+                                                   config.bf_search_step_size),
+                                      display_freq=50)
                     # get pot results
                     pot_result = pot_eval(train_score, test_score, y_test[-len(test_score):], level=config.level)
 
@@ -196,7 +206,8 @@ if __name__ == '__main__':
     arg_parser = ArgumentParser()
     register_config_arguments(config, arg_parser)
     arg_parser.parse_args(sys.argv[1:])
-    config.x_dim = get_data_dim(config.dataset)
+    if config.x_dim is None:
+        config.x_dim = get_data_dim(config.dataset)
 
     print_with_title('Configurations', pformat(config.to_dict()), after='\n')
 
