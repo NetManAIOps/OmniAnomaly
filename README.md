@@ -28,7 +28,7 @@ wget https://s3-us-west-2.amazonaws.com/telemanom/data.zip && unzip data.zip && 
 cd data && wget https://raw.githubusercontent.com/khundman/telemanom/master/labeled_anomalies.csv
 ```
 
-#### Install dependencies (with python 3.5+) 
+#### Install dependencies (with python 3.5, 3.6) 
 
 (virtualenv is recommended)
 
@@ -39,7 +39,7 @@ pip install -r requirements.txt
 #### Preprocess the data
 
 ```shell
-python data_process.py <dataset>
+python data_preprocess.py <dataset>
 ```
 
 where `<dataset>` is one of `SMAP`, `MSL` or `SMD`.
