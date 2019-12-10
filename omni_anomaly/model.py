@@ -46,7 +46,7 @@ class OmniAnomaly(VarScopeObject):
                                     mean_q_mlp=partial(tf.layers.dense, units=config.z_dim, name='z_mean', reuse=tf.AUTO_REUSE),
                                     std_q_mlp=partial(softplus_std, units=config.z_dim, epsilon=config.std_epsilon,
                                                       name='z_std'),
-                                    z_dim=config.z_dim) if config.use_connected_z_q else Normal,
+                                    z_dim=config.z_dim, window_length=config.window_length) if config.use_connected_z_q else Normal,
                 h_for_p_x=Lambda(
                     partial(
                         wrap_params_net,
