@@ -144,7 +144,7 @@ class OmniAnomaly(VarScopeObject):
                 latent_log_probs=chain.vi.latent_log_probs,
                 axis=chain.vi.axis
             )
-            loss = tf.reduce_mean(vi.training.sgvb())
+            loss = tf.reduce_mean(chain.vi.training.sgvb())
             return loss
 
     def get_score(self, x, n_z=None,
