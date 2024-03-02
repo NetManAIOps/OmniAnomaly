@@ -9,7 +9,16 @@ OmniAnomaly is a stochastic recurrent neural network model which glues Gated Rec
 #### Clone the repo
 
 ```
-git clone https://github.com/smallcowbaby/OmniAnomaly && cd OmniAnomaly
+git clone https://github.com/yyexela/OmniAnomaly && cd OmniAnomaly
+```
+
+#### Create and run Docker container
+
+```shell
+# Build docker container with GPU support
+docker build -t omnianomaly .
+# Start docker container with GPU support
+docker run --gpus all -v./:/app/OmniAnomaly -it --rm omnianomaly bash
 ```
 
 #### Get data
@@ -22,15 +31,6 @@ You can get the public datasets (SMAP and MSL) using:
 wget https://s3-us-west-2.amazonaws.com/telemanom/data.zip && unzip data.zip && rm data.zip
 
 cd data && wget https://raw.githubusercontent.com/khundman/telemanom/master/labeled_anomalies.csv
-```
-
-#### Create and run Docker container
-
-```shell
-# Build docker container with GPU support
-docker build -t omnianomaly .
-# Start docker container with GPU support
-docker run --gpus all -v<absolute-path-to-OmniAnomaly-repo>:/app/OmniAnomaly -it --rm omnianomaly bash
 ```
 
 #### Preprocess the data
