@@ -85,7 +85,7 @@ class ExpConfig(Config):
     test_score_filename = 'test_score.pkl'
 
 
-def main():
+def main(): 
     logging.basicConfig(
         level='INFO',
         format='%(asctime)s [%(levelname)s] %(name)s: %(message)s'

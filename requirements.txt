@@ -1,14 +1,14 @@
 six == 1.11.0
 matplotlib == 3.0.2
-numpy == 1.15.4
+numpy == 1.16.0 #1.16.0
 pandas == 0.23.4
 scipy == 1.2.0
 scikit_learn == 0.20.2
-tensorflow-gpu == 1.12.0
-tensorflow_probability == 0.5.0
+tensorflow-gpu == 1.15.0 #1.13.0
+tensorflow_probability == 0.8.0 #0.5.0
 tqdm == 4.28.1
 imageio == 2.4.1
 fs == 2.3.0
 click == 7.0
-git+https://github.com/thu-ml/zhusuan.git
-git+https://github.com/haowen-xu/tfsnippet.git@v0.2.0-alpha1
+git+https://github.com/yyexela/tfsnippet-tf-compat.git@v1
+git+https://github.com/yyexela/zhusuan-tf-compat.git@v1
