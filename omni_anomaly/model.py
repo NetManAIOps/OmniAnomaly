@@ -43,7 +43,7 @@ class OmniAnomaly(VarScopeObject):
                 ) if config.use_connected_z_p else Normal(mean=tf.zeros([config.z_dim]), std=tf.ones([config.z_dim])),
                 p_x_given_z=Normal,
                 q_z_given_x=partial(RecurrentDistribution,
-                                    mean_q_mlp=partial(tf.layers.dense, units=config.z_dim, name='z_mean', reuse=tf.AUTO_REUSE),
+                                    mean_q_mlp=partial(tf.layers.dense, units=config.z_dim, name='z_mean', reuse=tf.compat.v1.AUTO_REUSE),
                                     std_q_mlp=partial(softplus_std, units=config.z_dim, epsilon=config.std_epsilon,
                                                       name='z_std'),
                                     z_dim=config.z_dim, window_length=config.window_length) if config.use_connected_z_q else Normal,
@@ -57,7 +57,7 @@ class OmniAnomaly(VarScopeObject):
                                                  dense_dim=config.dense_dim,
                                                  name='rnn_p_x'),
                         mean_layer=partial(
-                            tf.layers.dense, units=config.x_dim, name='x_mean', reuse=tf.AUTO_REUSE
+                            tf.layers.dense, units=config.x_dim, name='x_mean', reuse=tf.compat.v1.AUTO_REUSE
                         ),
                         std_layer=partial(
                             softplus_std, units=config.x_dim, epsilon=config.std_epsilon,
@@ -84,7 +84,7 @@ class OmniAnomaly(VarScopeObject):
                                                  dense_dim=config.dense_dim,
                                                  name="rnn_q_z"),
                         mean_layer=partial(
-                            tf.layers.dense, units=config.z_dim, name='z_mean', reuse=tf.AUTO_REUSE
+                            tf.layers.dense, units=config.z_dim, name='z_mean', reuse=tf.compat.v1.AUTO_REUSE
                         ),
                         std_layer=partial(
                             softplus_std, units=config.z_dim, epsilon=config.std_epsilon,

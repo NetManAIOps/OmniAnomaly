@@ -40,7 +40,7 @@ class RecurrentDistribution(Distribution):
         input_q_n = tf.broadcast_to(input_q_n,
                                     [tf.shape(z_previous)[0], tf.shape(input_q_n)[0], input_q_n.shape[1]])
         input_q = tf.concat([input_q_n, z_previous], axis=-1)
-        mu_q = self.mean_q_mlp(input_q, reuse=tf.AUTO_REUSE)  # n_sample * batch_size * z_dim
+        mu_q = self.mean_q_mlp(input_q, reuse=tf.compat.v1.AUTO_REUSE)  # n_sample * batch_size * z_dim
 
         std_q = self.std_q_mlp(input_q)  # n_sample * batch_size * z_dim
 
@@ -59,13 +59,13 @@ class RecurrentDistribution(Distribution):
             input_q_n = tf.broadcast_to(input_q_n,
                                         [tf.shape(given_n)[0], tf.shape(input_q_n)[0], input_q_n.shape[1]])
         input_q = tf.concat([given_n, input_q_n], axis=-1)
-        mu_q = self.mean_q_mlp(input_q, reuse=tf.AUTO_REUSE)
+        mu_q = self.mean_q_mlp(input_q, reuse=tf.compat.v1.AUTO_REUSE)
 
         std_q = self.std_q_mlp(input_q)
-        logstd_q = tf.log(std_q)
+        logstd_q = tf.math.log(std_q)
         precision = tf.exp(-2 * logstd_q)
         if self._check_numerics:
-            precision = tf.check_numerics(precision, "precision")
+            precision = tf.debugging.check_numerics(precision, "precision")
         log_prob_n = - 0.9189385332046727 - logstd_q - 0.5 * precision * tf.square(tf.minimum(tf.abs(given_n - mu_q),
                                                                                               1e8))
         return log_prob_n
@@ -98,7 +98,7 @@ class RecurrentDistribution(Distribution):
             noise = self.normal.sample(n_samples=n_samples)
 
             noise = tf.transpose(noise, [1, 0, 2])  # window_length * n_samples * z_dim
-            noise = tf.truncated_normal(tf.shape(noise))
+            noise = tf.random.truncated_normal(tf.shape(noise))
 
             time_indices_shape = tf.convert_to_tensor([n_samples, tf.shape(self.input_q)[1], self.z_dim])
 

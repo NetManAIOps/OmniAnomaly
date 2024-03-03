@@ -85,7 +85,7 @@ class ExpConfig(Config):
     test_score_filename = 'test_score.pkl'
 
 
-def main():
+def main(): 
     logging.basicConfig(
         level='INFO',
         format='%(asctime)s [%(levelname)s] %(name)s: %(message)s'
@@ -97,7 +97,7 @@ def main():
                  test_start=config.test_start)
 
     # construct the model under `variable_scope` named 'model'
-    with tf.variable_scope('model') as model_vs:
+    with tf.compat.v1.variable_scope('model') as model_vs:
         model = OmniAnomaly(config=config, name="model")
 
         # construct the trainer
@@ -116,7 +116,7 @@ def main():
         predictor = Predictor(model, batch_size=config.batch_size, n_z=config.test_n_z,
                               last_point_only=True)
 
-        with tf.Session().as_default():
+        with tf.compat.v1.Session().as_default():
 
             if config.restore_dir is not None:
                 # Restore variables from `save_dir`.

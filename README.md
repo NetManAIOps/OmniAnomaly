@@ -1,19 +1,24 @@
 # OmniAnomaly
 
-
-
 ### Anomaly Detection for Multivariate Time Series through Modeling Temporal Dependence of Stochastic Variables
 
 OmniAnomaly is a stochastic recurrent neural network model which glues Gated Recurrent Unit (GRU) and Variational auto-encoder (VAE), its core idea is to learn the normal patterns of multivariate time series and uses the reconstruction probability to do anomaly judgment. 
-
-
 
 ## Getting Started
 
 #### Clone the repo
 
 ```
-git clone https://github.com/smallcowbaby/OmniAnomaly && cd OmniAnomaly
+git clone https://github.com/yyexela/OmniAnomaly && cd OmniAnomaly
+```
+
+#### Create and run Docker container
+
+```shell
+# Build docker container with GPU support
+docker build -t omnianomaly .
+# Start docker container with GPU support
+docker run --gpus all -v./:/app/OmniAnomaly -it --rm omnianomaly bash
 ```
 
 #### Get data
@@ -26,14 +31,6 @@ You can get the public datasets (SMAP and MSL) using:
 wget https://s3-us-west-2.amazonaws.com/telemanom/data.zip && unzip data.zip && rm data.zip
 
 cd data && wget https://raw.githubusercontent.com/khundman/telemanom/master/labeled_anomalies.csv
-```
-
-#### Install dependencies (with python 3.5, 3.6) 
-
-(virtualenv is recommended)
-
-```shell
-pip install -r requirements.txt
 ```
 
 #### Preprocess the data
@@ -55,8 +52,6 @@ If you want to change the default configuration, you can edit `ExpConfig` in `ma
 ```
 python main.py --dataset='MSL' --max_epoch=20
 ```
-
-
 
 ## Data
 
