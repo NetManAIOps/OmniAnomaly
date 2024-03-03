@@ -22,7 +22,7 @@ class Trainer(VarScopeObject):
 
     Args:
         model (OmniAnomaly): The :class:`OmniAnomaly` model instance.
-        model_vs (str or tf.VariableScope): If specified, will collect
+        model_vs (str or tf.compat.v1.VariableScope): If specified, will collect
             trainable variables only from this scope.  If :obj:`None`,
             will collect all trainable variables within current graph.
             (default :obj:`None`)
@@ -35,7 +35,7 @@ class Trainer(VarScopeObject):
             validation.  If :obj:`None`, follow `feed_dict` of training.
             (default :obj:`None`)
         use_regularization_loss (bool): Whether or not to add regularization
-            loss from `tf.GraphKeys.REGULARIZATION_LOSSES` to the training
+            loss from `tf.compat.v1.GraphKeys.REGULARIZATION_LOSSES` to the training
             loss? (default :obj:`True`)
         max_epoch (int or None): Maximum epochs to run.  If :obj:`None`,
             will not stop at any particular epoch. (default 256)
@@ -73,7 +73,7 @@ class Trainer(VarScopeObject):
                  max_epoch=256, max_step=None, batch_size=256,
                  valid_batch_size=1024, valid_step_freq=100,
                  initial_lr=0.001, lr_anneal_epochs=10, lr_anneal_factor=0.75,
-                 optimizer=tf.train.AdamOptimizer, optimizer_params=None,
+                 optimizer=tf.compat.v1.train.AdamOptimizer, optimizer_params=None,
                  grad_clip_norm=50.0, check_numerics=True,
                  name=None, scope=None):
         super(Trainer, self).__init__(name=name, scope=scope)
@@ -104,15 +104,15 @@ class Trainer(VarScopeObject):
         # build the trainer
         with reopen_variable_scope(self.variable_scope):
             # the global step for this model
-            self._global_step = tf.get_variable(
+            self._global_step = tf.compat.v1.get_variable(
                 dtype=tf.int64, name='global_step', trainable=False,
                 initializer=tf.constant(0, dtype=tf.int64)
             )
 
             # input placeholders
-            self._input_x = tf.placeholder(
+            self._input_x = tf.compat.v1.placeholder(
                 dtype=tf.float32, shape=[None, model.window_length, model.x_dims], name='input_x')
-            self._learning_rate = tf.placeholder(
+            self._learning_rate = tf.compat.v1.placeholder(
                 dtype=tf.float32, shape=(), name='learning_rate')
 
             # compose the training loss
@@ -120,12 +120,12 @@ class Trainer(VarScopeObject):
                 loss = model.get_training_loss(
                     x=self._input_x, n_z=n_z)
                 if use_regularization_loss:
-                    loss += tf.losses.get_regularization_loss()
+                    loss += tf.compat.v1.losses.get_regularization_loss()
                 self._loss = loss
 
             # get the training variables
             train_params = get_variables_as_dict(
-                scope=model_vs, collection=tf.GraphKeys.TRAINABLE_VARIABLES)
+                scope=model_vs, collection=tf.compat.v1.GraphKeys.TRAINABLE_VARIABLES)
             self._train_params = train_params
 
             # create the trainer
@@ -146,7 +146,7 @@ class Trainer(VarScopeObject):
                     if grad_clip_norm:
                         grad = tf.clip_by_norm(grad, grad_clip_norm)
                     if check_numerics:
-                        grad = tf.check_numerics(
+                        grad = tf.debugging.check_numerics(
                             grad,
                             'gradient for {} has numeric issue'.format(var.name)
                         )
@@ -154,21 +154,21 @@ class Trainer(VarScopeObject):
 
             # build the training op
             with tf.control_dependencies(
-                    tf.get_collection(tf.GraphKeys.UPDATE_OPS)):
+                    tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.UPDATE_OPS)):
                 self._train_op = self._optimizer.apply_gradients(
                     grad_vars, global_step=self._global_step)
 
             # the training summary in case `summary_dir` is specified
             with tf.name_scope('summary'):
-                self._summary_op = tf.summary.merge([
-                    tf.summary.histogram(v.name.rsplit(':', 1)[0], v)
+                self._summary_op = tf.compat.v1.summary.merge([
+                    tf.compat.v1.summary.histogram(v.name.rsplit(':', 1)[0], v)
                     for v in six.itervalues(self._train_params)
                 ])
 
             # initializer for the variables
-            self._trainer_initializer = tf.variables_initializer(
+            self._trainer_initializer = tf.compat.v1.variables_initializer(
                 list(six.itervalues(get_variables_as_dict(scope=self.variable_scope,
-                                                          collection=tf.GraphKeys.GLOBAL_VARIABLES)))
+                                                          collection=tf.compat.v1.GraphKeys.GLOBAL_VARIABLES)))
             )
 
     @property

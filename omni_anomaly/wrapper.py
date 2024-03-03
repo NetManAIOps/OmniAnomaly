@@ -77,7 +77,7 @@ class TfpDistribution(Distribution):
 
 
 def softplus_std(inputs, units, epsilon, name):
-    return tf.nn.softplus(tf.layers.dense(inputs, units, name=name, reuse=tf.AUTO_REUSE)) + epsilon
+    return tf.nn.softplus(tf.layers.dense(inputs, units, name=name, reuse=tf.compat.v1.AUTO_REUSE)) + epsilon
 
 
 def rnn(x,
@@ -89,7 +89,7 @@ def rnn(x,
         time_axis=1,
         name='rnn'):
     from tensorflow.contrib import rnn
-    with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
+    with tf.compat.v1.variable_scope(name, reuse=tf.compat.v1.AUTO_REUSE):
         if len(x.shape) == 4:
             x = tf.reduce_mean(x, axis=0)
         elif len(x.shape) != 3:
@@ -122,7 +122,7 @@ def rnn(x,
 
 
 def wrap_params_net(inputs, h_for_dist, mean_layer, std_layer):
-    with tf.variable_scope('hidden', reuse=tf.AUTO_REUSE):
+    with tf.compat.v1.variable_scope('hidden', reuse=tf.compat.v1.AUTO_REUSE):
         h = h_for_dist(inputs)
     return {
         'mean': mean_layer(h),
@@ -131,7 +131,7 @@ def wrap_params_net(inputs, h_for_dist, mean_layer, std_layer):
 
 
 def wrap_params_net_srnn(inputs, h_for_dist):
-    with tf.variable_scope('hidden', reuse=tf.AUTO_REUSE):
+    with tf.compat.v1.variable_scope('hidden', reuse=tf.compat.v1.AUTO_REUSE):
         h = h_for_dist(inputs)
     return {
         'input_q': h
